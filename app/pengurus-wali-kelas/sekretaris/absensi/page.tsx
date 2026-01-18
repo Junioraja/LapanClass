@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, UserCheck, UserX, Calendar } from 'lucide-react'
+import Link from 'next/link'
+import { Users, UserCheck, UserX, Calendar, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AttendanceModal } from '@/components/attendance-modal'
 import { AttendanceChart } from '@/components/attendance-chart'
@@ -73,10 +74,20 @@ export default function Home() {
       <div className="px-4 py-6 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            Dashboard Kehadiran
-          </h1>
-          <p className="mt-1 text-sm text-gray-600">{formatIndonesianDate(today)}</p>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+                Dashboard Kehadiran
+              </h1>
+              <p className="mt-1 text-sm text-gray-600">{formatIndonesianDate(today)}</p>
+            </div>
+            <Link href="/pengurus-wali-kelas">
+              <Button variant="outline" size="lg" className="gap-2">
+                <ArrowLeft className="h-5 w-5" />
+                Kembali ke Dashboard
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Holiday Banner */}

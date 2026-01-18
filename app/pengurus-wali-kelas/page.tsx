@@ -371,7 +371,7 @@ export default function PengurusWaliKelasPage() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <Link href="/pengurus-wali-kelas/sekretaris/absensi">
+                            <Link href="/pengurus-wali-kelas/sekretaris">
                                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                                     Buka Menu Sekretaris
                                 </Button>

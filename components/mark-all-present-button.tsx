@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { UserCheck, Loader2 } from 'lucide-react'
+import { UserCheck, Loader2, Calendar as CalendarIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
     Dialog,
     DialogContent,
@@ -24,8 +26,13 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
     const [showConfirm, setShowConfirm] = useState(false)
     const [loading, setLoading] = useState(false)
     const [studentCount, setStudentCount] = useState(0)
+    const [selectedDate, setSelectedDate] = useState('')
 
     const handleOpenDialog = async () => {
+        // Set default date to today
+        const todayString = formatDateForDB(new Date())
+        setSelectedDate(todayString)
+
         // Get total students count
         const { count } = await supabase
             .from('students_master')
@@ -36,11 +43,14 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
     }
 
     const handleConfirm = async () => {
+        if (!selectedDate) {
+            alert('Pilih tanggal terlebih dahulu')
+            return
+        }
+
         setLoading(true)
 
         try {
-            const dateStr = formatDateForDB(date)
-
             // Get all students
             const { data: students, error: fetchError } = await supabase
                 .from('students_master')
@@ -57,7 +67,7 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
             const attendanceRecords = students.map((student) => ({
                 nomor_absen: student.nomor_absen,
                 status: 'Hadir',
-                tanggal: dateStr,
+                tanggal: selectedDate,
                 keterangan: null,
             }))
 
@@ -80,6 +90,17 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
         }
     }
 
+    const formatDisplayDate = (dateStr: string) => {
+        if (!dateStr) return ''
+        const d = new Date(dateStr)
+        return d.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+    }
+
     return (
         <>
             <Button
@@ -93,24 +114,46 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
             </Button>
 
             <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
-                <DialogContent>
+                <DialogContent className="sm:max-w-[500px]">
                     <DialogHeader>
-                        <DialogTitle>Konfirmasi Kehadiran Semua Siswa</DialogTitle>
+                        <DialogTitle>Hadirkan Semua Siswa</DialogTitle>
                         <DialogDescription>
-                            Apakah Anda yakin ingin menandai semua siswa hadir untuk tanggal{' '}
-                            <strong>{formatDateForDB(date)}</strong>?
+                            Pilih tanggal untuk menandai semua siswa sebagai hadir
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="rounded-lg bg-emerald-50 p-4 border border-emerald-200">
-                        <p className="text-sm text-emerald-900">
-                            ✅ <strong>{studentCount} siswa</strong> akan ditandai sebagai{' '}
-                            <strong>"Hadir"</strong>
-                        </p>
-                        <p className="text-xs text-emerald-700 mt-2">
-                            Catatan: Jika ada yang tidak hadir, Anda masih bisa mengedit absensi mereka secara
-                            manual setelahnya.
-                        </p>
+                    <div className="space-y-4 py-4">
+                        {/* Date Picker */}
+                        <div className="space-y-2">
+                            <Label htmlFor="attendance-date" className="flex items-center gap-2">
+                                <CalendarIcon className="h-4 w-4 text-gray-500" />
+                                Tanggal Kehadiran
+                            </Label>
+                            <Input
+                                id="attendance-date"
+                                type="date"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                                className="w-full"
+                            />
+                            {selectedDate && (
+                                <p className="text-sm text-gray-600">
+                                    {formatDisplayDate(selectedDate)}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Info Box */}
+                        <div className="rounded-lg bg-emerald-50 p-4 border border-emerald-200">
+                            <p className="text-sm text-emerald-900">
+                                ✅ <strong>{studentCount} siswa</strong> akan ditandai sebagai{' '}
+                                <strong>"Hadir"</strong>
+                            </p>
+                            <p className="text-xs text-emerald-700 mt-2">
+                                Catatan: Jika ada yang tidak hadir, Anda masih bisa mengedit absensi mereka secara
+                                manual setelahnya.
+                            </p>
+                        </div>
                     </div>
 
                     <DialogFooter>
@@ -119,7 +162,7 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
                         </Button>
                         <Button
                             onClick={handleConfirm}
-                            disabled={loading}
+                            disabled={loading || !selectedDate}
                             className="bg-emerald-600 hover:bg-emerald-700"
                         >
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
