@@ -53,10 +53,15 @@ export default function ManajemenLayout({ children }: { children: React.ReactNod
 
     // Route protection - move to useEffect to avoid render during render
     useEffect(() => {
-        // Only redirect if user is defined (meaning auth state has loaded)
-        // and the user is not authorized for this section.
-        if (user !== undefined && (!user || !['wali_kelas', 'ketua_kelas', 'bendahara'].includes(user.role))) {
-            router.push('/pengurus-wali-kelas')
+        // Only redirect if user state is loaded AND user is not authorized
+        if (user !== undefined) {
+            if (!user) {
+                // No user logged in
+                router.push('/login')
+            } else if (!['wali_kelas', 'ketua_kelas', 'bendahara', 'sekretaris'].includes(user.role)) {
+                // User logged in but not authorized for this section
+                router.push('/pengurus-wali-kelas')
+            }
         }
     }, [user, router])
 
@@ -65,8 +70,8 @@ export default function ManajemenLayout({ children }: { children: React.ReactNod
         router.push('/login')
     }
 
-    // Don't render if not authorized or user is still loading (user === undefined)
-    if (user === undefined || !user || !['wali_kelas', 'ketua_kelas', 'bendahara'].includes(user.role)) {
+    // Show loading while user state is being determined
+    if (user === undefined) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="text-center">
@@ -75,6 +80,11 @@ export default function ManajemenLayout({ children }: { children: React.ReactNod
                 </div>
             </div>
         )
+    }
+
+    // Don't render if user is not logged in or not authorized
+    if (!user || !['wali_kelas', 'ketua_kelas', 'bendahara', 'sekretaris'].includes(user.role)) {
+        return null
     }
 
     return (

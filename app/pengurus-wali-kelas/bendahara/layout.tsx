@@ -63,7 +63,7 @@ export default function BendaharaLayout({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (loading) return
 
-        if (!user || (user.role !== 'bendahara' && user.role !== 'wali_kelas' && user.role !== 'ketua_kelas')) {
+        if (!user || !['bendahara', 'wali_kelas', 'ketua_kelas', 'sekretaris'].includes(user.role)) {
             router.push('/login')
         }
     }, [user, loading, router])
@@ -128,8 +128,8 @@ export default function BendaharaLayout({ children }: { children: ReactNode }) {
                                         <Link
                                             href={item.href}
                                             className={`group flex gap-x-3 rounded-lg p-3 text-sm font-semibold leading-6 transition-all ${isActive
-                                                    ? 'bg-emerald-50 text-emerald-600'
-                                                    : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
+                                                ? 'bg-emerald-50 text-emerald-600'
+                                                : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
                                                 }`}
                                         >
                                             <Icon
@@ -219,8 +219,8 @@ export default function BendaharaLayout({ children }: { children: ReactNode }) {
                                                     href={item.href}
                                                     onClick={() => setSidebarOpen(false)}
                                                     className={`group flex gap-x-3 rounded-lg p-3 text-sm font-semibold leading-6 transition-all ${isActive
-                                                            ? 'bg-emerald-50 text-emerald-600'
-                                                            : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
+                                                        ? 'bg-emerald-50 text-emerald-600'
+                                                        : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
                                                         }`}
                                                 >
                                                     <Icon

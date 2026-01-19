@@ -98,7 +98,7 @@ export default function PengurusWaliKelasPage() {
                 .select('*', { count: 'exact', head: true })
                 .eq('class_id', classId)
                 .eq('tanggal', today)
-                .eq('status', 'hadir')
+                .eq('status', 'Hadir')
 
             // Get monthly attendance percentage
             const startOfMonth = new Date()
@@ -110,7 +110,7 @@ export default function PengurusWaliKelasPage() {
                 .gte('tanggal', startOfMonth.toISOString().split('T')[0])
 
             const monthlyPercentage = monthlyAtt && monthlyAtt.length > 0
-                ? Math.round((monthlyAtt.filter(a => a.status === 'hadir').length / monthlyAtt.length) * 100)
+                ? Math.round((monthlyAtt.filter(a => a.status === 'Hadir').length / monthlyAtt.length) * 100)
                 : 0
 
             // Get finance balance
@@ -173,7 +173,7 @@ export default function PengurusWaliKelasPage() {
                     .eq('tanggal', dateStr)
 
                 const percentage = data && data.length > 0
-                    ? Math.round((data.filter(a => a.status === 'hadir').length / data.length) * 100)
+                    ? Math.round((data.filter(a => a.status === 'Hadir').length / data.length) * 100)
                     : 0
 
                 weekData.push({ day: dayName, percentage })

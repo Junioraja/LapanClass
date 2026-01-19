@@ -88,12 +88,13 @@ export default function LoginPage() {
             // Redirect based on role
             if (user.role === 'admin') {
                 router.push('/admin/dashboard')
-            } else if (user.role === 'sekretaris') {
-                router.push('/pengurus-wali-kelas/sekretaris/absensi')
-            } else if (user.role === 'bendahara' || user.role === 'wali_kelas' || user.role === 'ketua_kelas') {
+            } else if (['wali_kelas', 'ketua_kelas', 'sekretaris', 'bendahara'].includes(user.role)) {
+                // All pengurus roles go to main dashboard
                 router.push('/pengurus-wali-kelas')
+            } else if (user.role === 'siswa') {
+                router.push('/siswa/dashboard')
             } else {
-                router.push('/dashboard')
+                router.push('/')
             }
         } catch (error) {
             console.error('Login error:', error)
