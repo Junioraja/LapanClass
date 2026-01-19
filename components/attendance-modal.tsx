@@ -124,7 +124,8 @@ export function AttendanceModal({ open, onOpenChange, onSuccess }: AttendanceMod
                     .from('attendance')
                     .upsert(
                         {
-                            student_id: student.id,  // Use UUID from students_master
+                            student_id: student.id,   // Use UUID from students_master
+                            class_id: student.class_id,  // Required NOT NULL field
                             status,
                             tanggal: dateStr,
                             keterangan: keterangan || null,

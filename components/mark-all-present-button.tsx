@@ -51,10 +51,10 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
         setLoading(true)
 
         try {
-            // Get all students with their IDs
+            // Get all students with their IDs and class_id
             const { data: students, error: fetchError } = await supabase
                 .from('students_master')
-                .select('id, nis, nama')
+                .select('id, nis, nama, class_id')
 
             if (fetchError) throw fetchError
 
@@ -66,6 +66,7 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
             // Prepare attendance records for all students using student_id
             const attendanceRecords = students.map((student) => ({
                 student_id: student.id,      // Use student UUID from students_master
+                class_id: student.class_id,  // Get class_id from student
                 status: 'Hadir',
                 tanggal: selectedDate,
                 keterangan: null,

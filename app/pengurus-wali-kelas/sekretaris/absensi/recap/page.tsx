@@ -89,10 +89,13 @@ export default function RecapPage() {
 
                 console.log('Students fetched:', students?.length)
 
-                // Fetch attendance within semester date range
+                // Fetch attendance within semester date range - JOIN with students
                 const { data: attendanceData, error: attendanceError } = await supabase
                     .from('attendance')
-                    .select('*')
+                    .select(`
+                        *,
+                        student:students_master!student_id (id, nomor_absen, nis, nama)
+                    `)
                     .gte('tanggal', semester.tanggal_mulai)
                     .lte('tanggal', semester.tanggal_selesai)
 
@@ -108,7 +111,7 @@ export default function RecapPage() {
                 // Calculate totals for each student
                 const recapData: StudentRecap[] = (students || []).map(student => {
                     const studentAttendance = (attendanceData || []).filter(
-                        a => a.nomor_absen === student.nomor_absen
+                        (a: any) => a.student?.id === student.id
                     )
 
                     const total_sakit = studentAttendance.filter(a => a.status === 'Sakit').length

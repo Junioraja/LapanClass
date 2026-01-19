@@ -2,6 +2,7 @@
 
 export interface Student {
     id?: string          // UUID from students_master
+    class_id?: string    // UUID - FK to classes
     nomor_absen: number
     nis: string
     nama: string

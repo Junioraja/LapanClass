@@ -152,11 +152,11 @@ export default function JadwalPage() {
                 .from('schedules')
                 .insert({
                     class_id: user.class_id,
-                    hari: selectedCell.hari,
+                    hari: selectedCell.hari.toLowerCase(), // Ensure lowercase for DB constraint
                     subject_id: formData.subject_id,
                     jam_mulai: formData.jam_mulai,
                     jam_selesai: formData.jam_selesai,
-                    pj_siswa_id: formData.pj_siswa_id || null,
+                    pj_siswa_id: formData.pj_siswa_id && formData.pj_siswa_id !== 'none' ? formData.pj_siswa_id : null,
                 })
 
             if (error) throw error
@@ -185,7 +185,7 @@ export default function JadwalPage() {
                     subject_id: formData.subject_id,
                     jam_mulai: formData.jam_mulai,
                     jam_selesai: formData.jam_selesai,
-                    pj_siswa_id: formData.pj_siswa_id || null,
+                    pj_siswa_id: formData.pj_siswa_id && formData.pj_siswa_id !== 'none' ? formData.pj_siswa_id : null,
                 })
                 .eq('id', editingSchedule.id)
 

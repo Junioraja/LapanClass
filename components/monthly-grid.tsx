@@ -64,12 +64,13 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
             // Fetch holidays
             const { data: holidaysData } = await supabase.from('holidays').select('*')
 
-            // Fetch attendance for the date range
+            // Fetch attendance for the date range - JOIN with students_master to get nomor_absen
             const { data: attendanceRecords } = await supabase
                 .from('attendance')
                 .select(`
           *,
-          attendance_periods (jam_ke)
+          attendance_periods (jam_ke),
+          student:students_master!student_id (nomor_absen, nis, nama)
         `)
                 .gte('tanggal', formatDateForDB(startDate))
                 .lte('tanggal', formatDateForDB(endDate))
@@ -84,7 +85,7 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
                     rangeDays.forEach((day) => {
                         const dateStr = formatDateForDB(day)
                         const record = (attendanceRecords as any)?.find(
-                            (r: any) => r.nomor_absen === student.nomor_absen && r.tanggal === dateStr
+                            (r: any) => r.student?.nomor_absen === student.nomor_absen && r.tanggal === dateStr
                         )
 
                         const holiday = isHoliday(dateStr, holidaysData || [])
@@ -188,7 +189,8 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
                 .from('attendance')
                 .select(`
           *,
-          attendance_periods (jam_ke)
+          attendance_periods (jam_ke),
+          student:students_master!student_id (nomor_absen, nis, nama)
         `)
                 .gte('tanggal', formatDateForDB(startDate))
                 .lte('tanggal', formatDateForDB(endDate))
@@ -201,7 +203,7 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
                 rangeDays.forEach((day) => {
                     const dateStr = formatDateForDB(day)
                     const record = (attendanceRecords as any)?.find(
-                        (r: any) => r.nomor_absen === student.nomor_absen && r.tanggal === dateStr
+                        (r: any) => r.student?.nomor_absen === student.nomor_absen && r.tanggal === dateStr
                     )
 
                     const holiday = isHoliday(dateStr, holidays)
@@ -245,7 +247,7 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
                             <TableHead className="sticky left-16 z-20 border-r-2 bg-sky-100 font-bold min-w-[200px]">
                                 Nama Siswa
                             </TableHead>
-                            <TableHead className="border-r-2 bg-sky-100 font-bold min-w-[120px]">NIS</TableHead>
+                            <TableHead className="sticky left-[272px] z-20 border-r-2 bg-sky-100 font-bold min-w-[120px]">NIS</TableHead>
                             {rangeDays.map((day, index) => {
                                 const dateStr = formatDateForDB(day)
                                 const weekend = isWeekend(day)
@@ -293,7 +295,7 @@ export function MonthlyGrid({ startDate, endDate }: MonthlyGridProps) {
                                     <TableCell className="sticky left-16 z-10 border-r-2 bg-white font-medium">
                                         {student.nama}
                                     </TableCell>
-                                    <TableCell className="border-r-2 text-xs text-muted-foreground">
+                                    <TableCell className="sticky left-[272px] z-10 border-r-2 bg-white text-xs text-muted-foreground">
                                         {student.nis}
                                     </TableCell>
                                     {rangeDays.map((day) => {
