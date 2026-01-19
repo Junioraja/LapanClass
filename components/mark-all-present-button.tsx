@@ -51,10 +51,10 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
         setLoading(true)
 
         try {
-            // Get all students
+            // Get all students with their IDs
             const { data: students, error: fetchError } = await supabase
                 .from('students_master')
-                .select('nomor_absen')
+                .select('id, nis, nama')
 
             if (fetchError) throw fetchError
 
@@ -63,9 +63,9 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
                 return
             }
 
-            // Prepare attendance records for all students
+            // Prepare attendance records for all students using student_id
             const attendanceRecords = students.map((student) => ({
-                nomor_absen: student.nomor_absen,
+                student_id: student.id,      // Use student UUID from students_master
                 status: 'Hadir',
                 tanggal: selectedDate,
                 keterangan: null,
@@ -75,7 +75,7 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
             const { error: upsertError } = await supabase
                 .from('attendance')
                 .upsert(attendanceRecords, {
-                    onConflict: 'nomor_absen,tanggal',
+                    onConflict: 'student_id,tanggal',  // Unique constraint
                 })
 
             if (upsertError) throw upsertError

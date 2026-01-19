@@ -119,18 +119,18 @@ export function AttendanceModal({ open, onOpenChange, onSuccess }: AttendanceMod
 
             // Process each student with same status/keterangan/periods
             for (const student of validStudents) {
-                // Upsert attendance record
+                // Upsert attendance record using student_id
                 const { data: attendanceData, error: attendanceError } = await supabase
                     .from('attendance')
                     .upsert(
                         {
-                            nomor_absen: student.nomor_absen,
+                            student_id: student.id,  // Use UUID from students_master
                             status,
                             tanggal: dateStr,
                             keterangan: keterangan || null,
                         },
                         {
-                            onConflict: 'nomor_absen,tanggal',
+                            onConflict: 'student_id,tanggal',
                         }
                     )
                     .select()

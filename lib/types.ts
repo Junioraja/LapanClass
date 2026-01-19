@@ -1,6 +1,7 @@
 // TypeScript types for the database schema
 
 export interface Student {
+    id?: string          // UUID from students_master
     nomor_absen: number
     nis: string
     nama: string
