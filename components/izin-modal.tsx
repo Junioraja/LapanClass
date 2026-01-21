@@ -97,10 +97,10 @@ export function IzinModal({ open, onOpenChange, onSuccess }: IzinModalProps) {
 
             setUploading(false)
 
-            // Insert to attendance table
+            // Upsert to attendance table (update if exists, insert if not)
             const { error } = await supabase
                 .from('attendance')
-                .insert({
+                .upsert({
                     student_id: user.id,
                     class_id: user.class_id,
                     tanggal: formatDateForDB(date),
@@ -108,6 +108,8 @@ export function IzinModal({ open, onOpenChange, onSuccess }: IzinModalProps) {
                     keterangan: keterangan || null,
                     foto_bukti: fotoBuktiUrl,
                     is_approved: false,
+                }, {
+                    onConflict: 'student_id,tanggal'
                 })
 
             if (error) throw error

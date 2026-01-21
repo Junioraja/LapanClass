@@ -60,23 +60,31 @@ export function IzinJamModal({ open, onOpenChange, onSuccess }: IzinJamModalProp
         setLoading(true)
 
         try {
-            // Insert to attendance table
+            // Upsert to attendance table
             const { data: attendanceData, error: attendanceError } = await supabase
                 .from('attendance')
-                .insert({
+                .upsert({
                     student_id: user.id,
                     class_id: user.class_id,
                     tanggal: formatDateForDB(date),
                     status: 'Izin',
                     keterangan: `Izin jam pelajaran ${jamMulai}-${jamSelesai}: ${keterangan}`,
                     is_approved: false,
+                }, {
+                    onConflict: 'student_id,tanggal'
                 })
                 .select()
                 .single()
 
             if (attendanceError) throw attendanceError
 
-            // Insert periods to attendance_periods
+            // Delete old periods for this attendance
+            await supabase
+                .from('attendance_periods')
+                .delete()
+                .eq('attendance_id', attendanceData.id)
+
+            // Insert new periods to attendance_periods
             const periods = []
             for (let i = jamMulai; i <= jamSelesai; i++) {
                 periods.push({
