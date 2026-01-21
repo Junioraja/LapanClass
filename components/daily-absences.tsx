@@ -21,21 +21,26 @@ export function DailyAbsences() {
         async function fetchData() {
             const dateStr = formatDateForDB(selectedDate)
 
-            // Fetch absences
+            // Fetch absences with student info via student_id join
             const { data: absenceData } = await supabase
                 .from('attendance')
                 .select(`
           *,
-          students_master (nomor_absen, nama, nis)
+          student:students_master!student_id (nomor_absen, nama, nis)
         `)
                 .eq('tanggal', dateStr)
                 .neq('status', 'Hadir')
-                .order('nomor_absen')
 
             // Fetch holidays
             const { data: holidayData } = await supabase.from('holidays').select('*')
 
-            setAbsences((absenceData as any) || [])
+            // Transform data to match expected format
+            const transformedData = (absenceData as any)?.map((item: any) => ({
+                ...item,
+                students_master: item.student // Map student to students_master for compatibility
+            })) || []
+
+            setAbsences(transformedData)
             if (holidayData) setHolidays(holidayData)
         }
 

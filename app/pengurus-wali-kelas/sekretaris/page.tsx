@@ -3,18 +3,26 @@
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { BookOpen, FileText, ArrowRight } from 'lucide-react'
+import { BookOpen, FileText, ArrowRight, ArrowLeft } from 'lucide-react'
 
 export default function SekretarisPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Menu Sekretaris</h1>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Pilih menu untuk mengelola absensi dan jurnal kelas
-                    </p>
+                <div className="mb-8 flex items-center justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900">Menu Sekretaris</h1>
+                        <p className="mt-2 text-sm text-gray-600">
+                            Pilih menu untuk mengelola absensi dan jurnal kelas
+                        </p>
+                    </div>
+                    <Link href="/pengurus-wali-kelas">
+                        <Button variant="outline" size="lg" className="gap-2">
+                            <ArrowLeft className="h-5 w-5" />
+                            Kembali ke Dashboard
+                        </Button>
+                    </Link>
                 </div>
 
                 {/* Cards */}

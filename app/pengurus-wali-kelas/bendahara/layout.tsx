@@ -159,20 +159,27 @@ export default function BendaharaLayout({ children }: { children: ReactNode }) {
             </aside>
 
             {/* Mobile Header */}
-            <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm lg:hidden">
-                <button
-                    type="button"
-                    className="-m-2.5 p-2.5 text-gray-700"
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                >
-                    <Menu className="h-6 w-6" />
-                </button>
-                <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600">
-                        <Wallet className="h-5 w-5 text-white" />
+            <div className="sticky top-0 z-40 flex items-center justify-between gap-x-6 bg-white px-4 py-4 shadow-sm lg:hidden">
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        className="-m-2.5 p-2.5 text-gray-700"
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                    >
+                        <Menu className="h-6 w-6" />
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600">
+                            <Wallet className="h-5 w-5 text-white" />
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">Bendahara</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900">Bendahara</span>
                 </div>
+                <Link href="/pengurus-wali-kelas">
+                    <Button variant="ghost" size="icon" title="Kembali">
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                </Link>
             </div>
 
             {/* Mobile Sidebar Overlay */}

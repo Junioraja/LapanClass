@@ -11,9 +11,19 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Compare password dengan hash
+ * Supports both hashed and plain text passwords (for backward compatibility)
  */
 export async function comparePassword(password: string, hash: string): Promise<boolean> {
-    return await bcrypt.compare(password, hash)
+    try {
+        // Try bcrypt comparison first (for hashed passwords)
+        const isMatch = await bcrypt.compare(password, hash)
+        return isMatch
+    } catch (error) {
+        // Fallback: If bcrypt fails, try plain text comparison
+        // This is for backward compatibility with existing plain text passwords
+        console.warn('Bcrypt comparison failed, trying plain text comparison')
+        return password === hash
+    }
 }
 
 /**

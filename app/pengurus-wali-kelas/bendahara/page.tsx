@@ -208,7 +208,7 @@ export default function BendaharaDashboardPage() {
         // Sort by months unpaid (descending)
         unpaidList.sort((a, b) => b.months_unpaid - a.months_unpaid)
 
-        setSiswaUnpaid(unpaidList.slice(0, 10)) // Top 10
+        setSiswaUnpaid(unpaidList) // Show ALL students unpaid
     }
 
     async function fetchMonthlyData(classId: string) {
@@ -401,10 +401,10 @@ export default function BendaharaDashboardPage() {
                                     <div
                                         key={siswa.id}
                                         className={`p-3 rounded-lg border ${siswa.months_unpaid >= 3
-                                                ? 'bg-red-50 border-red-200'
-                                                : siswa.months_unpaid >= 2
-                                                    ? 'bg-amber-50 border-amber-200'
-                                                    : 'bg-gray-50 border-gray-200'
+                                            ? 'bg-red-50 border-red-200'
+                                            : siswa.months_unpaid >= 2
+                                                ? 'bg-amber-50 border-amber-200'
+                                                : 'bg-gray-50 border-gray-200'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -415,10 +415,10 @@ export default function BendaharaDashboardPage() {
                                             <div className="text-right">
                                                 <p
                                                     className={`text-sm font-bold ${siswa.months_unpaid >= 3
-                                                            ? 'text-red-600'
-                                                            : siswa.months_unpaid >= 2
-                                                                ? 'text-amber-600'
-                                                                : 'text-gray-600'
+                                                        ? 'text-red-600'
+                                                        : siswa.months_unpaid >= 2
+                                                            ? 'text-amber-600'
+                                                            : 'text-gray-600'
                                                         }`}
                                                 >
                                                     {siswa.months_unpaid} bulan

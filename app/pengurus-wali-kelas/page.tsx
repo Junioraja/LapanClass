@@ -113,34 +113,34 @@ export default function PengurusWaliKelasPage() {
                 ? Math.round((monthlyAtt.filter(a => a.status === 'Hadir').length / monthlyAtt.length) * 100)
                 : 0
 
-            // Get finance balance
-            const { data: finances } = await supabase
-                .from('class_finance')
-                .select('jenis, jumlah')
+            // Get finance balance from kas_payments
+            const { data: kasPayments } = await supabase
+                .from('kas_payments')
+                .select('nominal')
                 .eq('class_id', classId)
 
-            const balance = finances?.reduce((acc, f) => {
-                return acc + (f.jenis === 'masuk' ? f.jumlah : -f.jumlah)
-            }, 0) || 0
-
-            // Get monthly income
-            const { data: monthlyInc } = await supabase
-                .from('class_finance')
-                .select('jumlah')
+            // Get expenses
+            const { data: expenses } = await supabase
+                .from('kas_expenses')
+                .select('nominal')
                 .eq('class_id', classId)
-                .eq('jenis', 'masuk')
+
+            const totalIncome = kasPayments?.reduce((acc, p) => acc + (p.nominal || 0), 0) || 0
+            const totalExpenses = expenses?.reduce((acc, e) => acc + (e.nominal || 0), 0) || 0
+            const balance = totalIncome - totalExpenses
+
+            // Get monthly income from kas
+            const { data: monthlyKas } = await supabase
+                .from('kas_payments')
+                .select('nominal')
+                .eq('class_id', classId)
                 .gte('tanggal', startOfMonth.toISOString().split('T')[0])
 
-            const monthlyIncome = monthlyInc?.reduce((acc, f) => acc + f.jumlah, 0) || 0
+            const monthlyIncome = monthlyKas?.reduce((acc, p) => acc + (p.nominal || 0), 0) || 0
 
-            // Get equipment stats
-            const { data: equip } = await supabase
-                .from('class_equipment')
-                .select('kondisi')
-                .eq('class_id', classId)
-
-            const equipmentTotal = equip?.length || 0
-            const equipmentNeedRepair = equip?.filter(e => e.kondisi === 'rusak' || e.kondisi === 'perlu_ganti').length || 0
+            // Equipment stats - set to 0 for now (can be implemented later)
+            const equipmentTotal = 0
+            const equipmentNeedRepair = 0
 
             setStats({
                 todayAttendance: { present: presentToday || 0, total: totalStudents || 0 },
@@ -196,16 +196,25 @@ export default function PengurusWaliKelasPage() {
                 const monthStart = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0]
                 const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0]
 
-                const { data } = await supabase
-                    .from('class_finance')
-                    .select('jenis, jumlah')
+                // Get kas income for this month
+                const { data: kasData } = await supabase
+                    .from('kas_payments')
+                    .select('nominal')
                     .eq('class_id', classId)
                     .gte('tanggal', monthStart)
                     .lte('tanggal', monthEnd)
 
-                const balance = data?.reduce((acc, f) => {
-                    return acc + (f.jenis === 'masuk' ? f.jumlah : -f.jumlah)
-                }, 0) || 0
+                // Get expenses for this month
+                const { data: expenseData } = await supabase
+                    .from('kas_expenses')
+                    .select('nominal')
+                    .eq('class_id', classId)
+                    .gte('tanggal', monthStart)
+                    .lte('tanggal', monthEnd)
+
+                const income = kasData?.reduce((acc, k) => acc + (k.nominal || 0), 0) || 0
+                const expense = expenseData?.reduce((acc, e) => acc + (e.nominal || 0), 0) || 0
+                const balance = income - expense
 
                 monthData.push({ month: months[date.getMonth()], amount: balance })
             }

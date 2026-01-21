@@ -92,7 +92,7 @@ export default function LoginPage() {
                 // All pengurus roles go to main dashboard
                 router.push('/pengurus-wali-kelas')
             } else if (user.role === 'siswa') {
-                router.push('/siswa/dashboard')
+                router.push('/siswa')
             } else {
                 router.push('/')
             }
@@ -122,8 +122,19 @@ export default function LoginPage() {
                 return
             }
 
+            // Debug logging
+            console.log('🔍 Debug Siswa Login:')
+            console.log('NIS:', data.nis)
+            console.log('Nama:', data.nama)
+            console.log('Password from DB:', data.password)
+            console.log('Password length:', data.password?.length)
+            console.log('Password starts with:', data.password?.substring(0, 10))
+            console.log('Input password:', siswaPassword)
+
             // Compare password
             const isPasswordValid = await comparePassword(siswaPassword, data.password || '')
+
+            console.log('Password valid?', isPasswordValid)
 
             if (!isPasswordValid) {
                 toast.error('Password salah')
@@ -138,10 +149,11 @@ export default function LoginPage() {
                 role: 'siswa',
                 class_id: data.class_id,
                 nis: data.nis,
+                nomor_absen: data.nomor_absen,
             })
 
             toast.success(`Selamat datang, ${data.nama}!`)
-            router.push('/siswa/dashboard')
+            router.push('/siswa')
         } catch (error) {
             console.error('Login error:', error)
             toast.error('Terjadi kesalahan. Silakan coba lagi.')

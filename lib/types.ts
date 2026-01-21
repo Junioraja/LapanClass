@@ -118,6 +118,7 @@ export interface AuthUser {
     class_id: string | null
     custom_id?: string
     nis?: string
+    nomor_absen?: number
 }
 
 // Schedule (jadwal pelajaran) with class_id
