@@ -357,13 +357,13 @@ export default function KasKelasPage() {
                                         <motion.div
                                             key={item.bulan}
                                             className={`p-4 rounded-xl border-2 transition-all ${item.sudah_bayar
-                                                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-sm'
-                                                    : 'bg-gradient-to-r from-red-50 to-orange-50 border-red-200 shadow-sm'
+                                                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-sm'
+                                                : 'bg-gradient-to-r from-red-50 to-orange-50 border-red-200 shadow-sm'
                                                 }`}
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.05 }}
-                                            whileHover={{ scale: 1.01, shadow: "lg" }}
+                                            whileHover={{ scale: 1.01, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
