@@ -70,6 +70,7 @@ export function MarkAllPresentButton({ date, onSuccess, disabled }: MarkAllPrese
                 status: 'Hadir',
                 tanggal: selectedDate,
                 keterangan: null,
+                is_approved: true,           // Auto-approved by pengurus kelas
             }))
 
             // Batch upsert all records

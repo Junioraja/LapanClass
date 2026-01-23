@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Users, UserCheck, UserX, Calendar, ArrowLeft } from 'lucide-react'
+import { Users, UserCheck, UserX, Calendar, ArrowLeft, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AttendanceModal } from '@/components/attendance-modal'
 import { AttendanceChart } from '@/components/attendance-chart'

@@ -35,6 +35,7 @@ import { Student, AttendanceStatus, Holiday } from '@/lib/types'
 import { timeToPeriods } from '@/lib/time-utils'
 import { formatDateForDB, canInputAttendance, getHolidayStatusText } from '@/lib/date-utils'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface AttendanceModalProps {
     open: boolean
@@ -43,6 +44,7 @@ interface AttendanceModalProps {
 }
 
 export function AttendanceModal({ open, onOpenChange, onSuccess }: AttendanceModalProps) {
+    const { user } = useAuth()
     const [students, setStudents] = useState<Student[]>([])
     const [holidays, setHolidays] = useState<Holiday[]>([])
     const [date, setDate] = useState<Date>(new Date())
@@ -129,6 +131,8 @@ export function AttendanceModal({ open, onOpenChange, onSuccess }: AttendanceMod
                             status,
                             tanggal: dateStr,
                             keterangan: keterangan || null,
+                            is_approved: true,  // Auto-approved by pengurus
+                            approved_by: user?.id || null,  // Track who approved
                         },
                         {
                             onConflict: 'student_id,tanggal',

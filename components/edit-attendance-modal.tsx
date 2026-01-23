@@ -24,6 +24,7 @@ import { supabase } from '@/lib/supabase'
 import { AttendanceStatus } from '@/lib/types'
 import { formatIndonesianDate } from '@/lib/date-utils'
 import { toast } from 'sonner'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface EditAttendanceModalProps {
     open: boolean
@@ -48,6 +49,7 @@ export function EditAttendanceModal({
     attendanceId,
     onSuccess,
 }: EditAttendanceModalProps) {
+    const { user } = useAuth()
     const [status, setStatus] = useState<AttendanceStatus>(currentStatus || 'Hadir')
     const [keterangan, setKeterangan] = useState(currentKeterangan || '')
     const [loading, setLoading] = useState(false)
@@ -73,6 +75,8 @@ export function EditAttendanceModal({
                     .update({
                         status,
                         keterangan: keterangan || null,
+                        is_approved: true,  // Auto-approved by pengurus
+                        approved_by: user?.id || null,  // Track who approved
                     })
                     .eq('id', attendanceId)
 

@@ -9,7 +9,8 @@ import {
     FileText,
     Settings,
     Menu,
-    X
+    X,
+    CheckCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
@@ -25,6 +26,11 @@ const navItems: NavItem[] = [
         title: 'Dashboard',
         href: '/pengurus-wali-kelas/sekretaris/absensi',
         icon: LayoutDashboard,
+    },
+    {
+        title: 'Approval',
+        href: '/pengurus-wali-kelas/sekretaris/absensi/approval',
+        icon: CheckCircle,
     },
     {
         title: 'Detail Bulanan',
